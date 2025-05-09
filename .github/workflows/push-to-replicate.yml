@@ -21,6 +21,11 @@ jobs:
         pip install --user cog
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+    - name: Check cog version (debug step)
+      run: |
+        which cog
+        cog --version
+
     - name: Log in to Replicate
       run: |
         cog login --token ${{ secrets.REPLICATE_API_TOKEN }}
