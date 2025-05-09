@@ -1,0 +1,11 @@
+build:
+  python_version: "3.10"
+  system_packages:
+    - ffmpeg
+  python_packages:
+    - numpy
+    - torch
+    - opencv-python
+    - moviepy
+    - scipy
+predict: "predict.py:Predictor"
