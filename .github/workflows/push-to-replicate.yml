@@ -1,35 +1,28 @@
 name: Push to Replicate
-
 on:
   workflow_dispatch:
-
 jobs:
   push:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-
     - name: Install Cog
       run: |
-        pip install --user cog
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-
+        pip install cog
+        which cog || echo "Cog not found in PATH"
+        echo "PATH=$PATH"
     - name: Check cog version (debug step)
       run: |
         which cog
         cog --version
-
     - name: Log in to Replicate
       run: |
         cog login --token ${{ secrets.REPLICATE_API_TOKEN }}
-
     - name: Push to Replicate
       run: |
         cog push r8.im/timosan61/fantasy-talking-tim
