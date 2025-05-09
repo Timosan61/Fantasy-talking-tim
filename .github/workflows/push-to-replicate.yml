@@ -11,21 +11,29 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    - name: Install Cog
+    - name: Install Cog directly
       run: |
         python -m pip install --upgrade pip
-        pip install replicate-cog
+        pip install cog
+        # Проверка установки
+        pip list | grep cog
+    - name: Add to PATH and check
+      run: |
         echo "$HOME/.local/bin" >> $GITHUB_PATH
+        python -c "import sys; print(sys.executable)"
+        python -c "import site; print(site.USER_BASE)"
+        find $HOME -name cog -type f
     - name: Check cog version (debug step)
       run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        python -m pip list | grep cog
-        python -c "import subprocess; subprocess.run(['cog', '--version'])"
+        export PATH="$PATH:$HOME/.local/bin:$(python -m site --user-base)/bin"
+        echo "PATH=$PATH"
+        which python
+        python -m cog --version || echo "Failed to run as module"
     - name: Log in to Replicate
       run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        python -c "import subprocess; subprocess.run(['cog', 'login', '--token', '${{ secrets.REPLICATE_API_TOKEN }}'])"
+        export PATH="$PATH:$HOME/.local/bin:$(python -m site --user-base)/bin"
+        python -m cog login --token ${{ secrets.REPLICATE_API_TOKEN }}
     - name: Push to Replicate
       run: |
-        export PATH="$HOME/.local/bin:$PATH"
-        python -c "import subprocess; subprocess.run(['cog', 'push', 'r8.im/timosan61/fantasy-talking-tim'])"
+        export PATH="$PATH:$HOME/.local/bin:$(python -m site --user-base)/bin"
+        python -m cog push r8.im/timosan61/fantasy-talking-tim
